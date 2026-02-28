@@ -1,52 +1,104 @@
-const menu = {
-  namaMenu: "Paket Sahur Ayam Bakar",
-  harga: 25000,
-  orders: [
-    { id: 1, nama: "Andi", keterangan: "Pedas sedang", jumlah: 2 },
-    { id: 2, nama: "Budi", keterangan: "Tanpa sambal", jumlah: 1 },
-    { id: 3, nama: "Siti", keterangan: "Extra nasi", jumlah: 3 },
-  ],
-}
+import { FaEdit, FaTrash } from "react-icons/fa"
+import { useOrders } from "../hooks/useOrders"
+import { useNavigate } from "react-router-dom" // <-- import useNavigate
+
 function Home() {
-  const totalPesanan = menu.orders.reduce((acc, item) => acc + item.jumlah, 0)
+  const { orders, loading, removeOrder, updateExistingOrder } = useOrders()
+  const navigate = useNavigate() // hook untuk navigasi
+
+  const harga = 15000
+  const totalPesanan = orders.reduce((acc, o) => acc + o.jumlah, 0)
+  const totalHarga = orders.reduce((acc, o) => acc + o.jumlah * harga, 0)
+
+  const handleEdit = (order) => {
+    const updated = { ...order, keterangan: "Updated" }
+    updateExistingOrder(order._id, updated)
+  }
+
+  if (loading)
+    return <div className="text-center mt-10 text-white">Loading...</div>
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-10">
-      {/* Header Menu */}
-      <div className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 mb-10 text-center">
-        <h1 className="text-4xl font-bold mb-2">{menu.namaMenu}</h1>
-        <p className="text-gray-500 mb-4">
-          Harga: Rp {menu.harga.toLocaleString()}
-        </p>
+    <div
+      className="min-h-screen flex flex-col justify-between p-6 items-center"
+      style={{
+        background: "linear-gradient(135deg, #a8e063 0%, #56ab2f 100%)",
+      }}
+    >
+      <div className="max-w-xl w-full">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-5">
+          <h1 className="text-4xl font-extrabold text-white text-center drop-shadow-md">
+            Paket Sahur Ayam Bakar
+          </h1>
 
-        <div className="inline-block bg-black text-white px-6 py-2 rounded-full text-sm">
-          Total Pesanan: {totalPesanan}
-        </div>
-      </div>
-
-      {/* List Pemesan */}
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-4 font-semibold text-gray-600 border-b px-6 py-4 bg-gray-50">
-          <span>Nama</span>
-          <span>Keterangan</span>
-          <span className="text-center">Jumlah</span>
-          <span className="text-right">Subtotal</span>
-        </div>
-
-        {menu.orders.map((order) => (
-          <div
-            key={order.id}
-            className="grid grid-cols-4 items-center px-6 py-4 border-b last:border-none hover:bg-gray-50 transition"
+          {/* Tombol navigasi ke halaman Pesanan */}
+          <button
+            onClick={() => navigate("/pesanan")}
+            className="bg-white/30 hover:bg-white/50 text-green-900 font-semibold px-4 py-2 rounded-xl transition shadow-md"
           >
-            <span className="font-medium">{order.nama}</span>
-            <span className="text-gray-500">{order.keterangan}</span>
-            <span className="text-center">{order.jumlah}</span>
-            <span className="text-right font-medium">
-              Rp {(order.jumlah * menu.harga).toLocaleString()}
-            </span>
+            Lihat Halaman Pesanan
+          </button>
+        </div>
+
+        {/* Total Pesanan & Harga */}
+        <div className="flex justify-center space-x-12 mb-10 text-white font-semibold drop-shadow-lg">
+          <div>
+            Total Pesanan: <span className="font-bold">{totalPesanan} pcs</span>
           </div>
-        ))}
+          <div>
+            Total Harga:{" "}
+            <span className="font-bold">Rp {totalHarga.toLocaleString()}</span>
+          </div>
+        </div>
+
+        {/* List Orders */}
+        <div className="space-y-5">
+          {orders.map((order) => (
+            <div
+              key={order._id}
+              className="flex justify-between items-center
+                bg-white/20 backdrop-blur-md border border-white/30
+                rounded-xl p-5 shadow-lg
+                transition hover:shadow-2xl hover:bg-white/30"
+            >
+              <div className="flex flex-col text-left max-w-[60%]">
+                <span className="text-green-900 font-semibold text-xl">
+                  {order.name} - Kamar {order.kamar}
+                </span>
+                <span className="text-green-700 text-sm mt-1">
+                  {order.description || "-"}
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-5">
+                <div className="text-green-900 font-semibold text-right min-w-[70px]">
+                  {order.jumlah} pcs
+                  <br />
+                  Rp {(order.jumlah * harga).toLocaleString()}
+                </div>
+
+                <button
+                  onClick={() => handleEdit(order)}
+                  className="bg-yellow-400 hover:bg-yellow-500 text-white p-3 rounded-full shadow-md transition transform hover:scale-110"
+                >
+                  <FaEdit size={18} />
+                </button>
+                <button
+                  onClick={() => removeOrder(order._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-md transition transform hover:scale-110"
+                >
+                  <FaTrash size={18} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      <footer className="mt-10 text-center text-white/80 text-sm select-none">
+        Created by Sahuria Team KADA 110
+      </footer>
     </div>
   )
 }
