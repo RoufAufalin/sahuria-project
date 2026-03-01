@@ -21,7 +21,10 @@ export const useOrders = () => {
       setLoading(true)
       const data = await orderService.getOrders(currentPage, limit)
 
-      setSummary(data.summary)
+      setSummary({
+        totalPesanan: data.totalPesanan,
+        totalHarga: data.totalRp,
+      })
       setOrders(data)
       setPage(currentPage)
     } catch (error) {
