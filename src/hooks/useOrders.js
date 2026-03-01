@@ -4,51 +4,93 @@ import * as orderService from "../services/orderServices"
 export const useOrders = () => {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const [limit] = useState(5)
 
-  // fetch orders saat pertama load
+  const [summary, setSummary] = useState({
+    totalPesanan: 0,
+    totalHarga: 0,
+  })
+
   useEffect(() => {
-    async function fetchData() {
-      const data = await orderService.getOrders()
-      setOrders(data)
-      setLoading(false)
-    }
-    fetchData()
+    fetchOrders()
   }, [])
 
+  const fetchOrders = async (currentPage = page) => {
+    try {
+      setLoading(true)
+      const data = await orderService.getOrders(currentPage, limit)
+
+      setSummary(data.summary)
+      setOrders(data)
+      setPage(currentPage)
+    } catch (error) {
+      console.error("Failed to fetch orders:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const refreshOrders = async () => {
-    setLoading(true)
-    const data = await orderService.getOrders()
-    setOrders(data)
-    setLoading(false)
+    await fetchOrders()
   }
 
   const removeOrder = async (id) => {
-    const success = await orderService.deleteOrder(id)
-    if (success) {
-      setOrders((prev) => prev.filter((order) => order._id !== id))
+    try {
+      const deletedId = await orderService.deleteOrder(id)
+
+      if (deletedId) {
+        setOrders((prev) => ({
+          ...prev,
+          total: prev.total - 1,
+          data: prev.data.filter((order) => order._id !== id),
+        }))
+      }
+    } catch (error) {
+      console.error("Failed to delete order:", error)
     }
   }
 
   const addNewOrder = async (order) => {
-    const newOrder = await orderService.addOrder(order)
-    if (newOrder) setOrders((prev) => [...prev, newOrder])
+    try {
+      const newOrder = await orderService.addOrder(order)
+
+      setOrders((prev) => ({
+        ...prev,
+        total: prev.total + 1,
+        data: [...(prev.data || []), newOrder],
+      }))
+    } catch (error) {
+      console.error("Failed to add order:", error)
+    }
   }
 
   const updateExistingOrder = async (id, updatedOrder) => {
-    const data = await orderService.updateOrder(id, updatedOrder)
-    if (data) {
-      setOrders((prev) =>
-        prev.map((o) => (o._id === id ? { ...o, ...data } : o)),
-      )
+    try {
+      const updatedData = await orderService.updateOrder(id, updatedOrder)
+
+      if (updatedData) {
+        setOrders((prev) => ({
+          ...prev,
+          data: prev.data.map((order) =>
+            order._id === id ? { ...order, ...updatedData } : order,
+          ),
+        }))
+      }
+    } catch (error) {
+      console.error("Failed to update order:", error)
     }
   }
 
   return {
     orders,
     loading,
-    refreshOrders,
-    removeOrder,
+    page,
+    limit,
+    fetchOrders,
     addNewOrder,
     updateExistingOrder,
+    removeOrder,
+    summary,
   }
 }

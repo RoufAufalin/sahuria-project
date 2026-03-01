@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Home from "./pages/HomePage"
+import OrderForm from "./pages/OrderForm"
 import "./App.css"
 
 function App() {
@@ -7,7 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/pesanan" element={<Pesanan />} /> */}
+        <Route path="/pesan" element={<OrderForm />} />
       </Routes>
     </BrowserRouter>
   )
