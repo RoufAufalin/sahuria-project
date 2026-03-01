@@ -1,16 +1,114 @@
-# React + Vite
+# 🍗 Sahuria - Paket Sahur 15 K
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplikasi pemesanan Paket Sahur berbasis React + REST API.
+User dapat menambahkan, mengupdate, menghapus, dan melihat total pesanan
+secara real-time.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧑‍💻 Installation
 
-## React Compiler
+### 1️⃣ Clone Repository
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+git clone https://github.com/username/sahuria.git
+cd sahuria
+```
 
-## Expanding the ESLint configuration
+### 2️⃣ Install Dependencies
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+```
+
+### 3️⃣ Run Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+## 🌍 API Endpoint Example
+
+Base URL diambil dari environment variable:
+
+    VITE_API_URL
+
+### Contoh Endpoint
+
+    GET    /orders
+    POST   /orders
+    PUT    /orders/:id
+    DELETE /orders/:id
+
+---
+
+## 📊 Summary Response Example
+
+Backend mengembalikan response seperti berikut:
+
+```json
+{
+  "data": [...],
+  "page": 1,
+  "limit": 5,
+  "total": 20,
+  "summary": {
+    "totalPesanan": 50,
+    "totalHarga": 750000
+  }
+}
+```
+
+---
+
+## 🧠 State Management
+
+Menggunakan custom hook `useOrders` untuk menangani:
+
+- Fetch data
+- Update state orders
+- Remove order
+- Handle pagination
+- Handle summary
+
+Redux tidak digunakan karena state masih manageable menggunakan custom
+hook.
+
+---
+
+## 🔐 Environment Notes
+
+- File `.env` tidak di-commit ke repository.
+- Gunakan `.env.example` untuk dokumentasi variabel environment.
+
+Contoh `.env`:
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+---
+
+## 📸 Preview
+
+Tambahkan screenshot aplikasi di sini:
+
+    ![Preview](./preview.png)
+
+---
+
+## 📌 Future Improvement
+
+- Toast notification
+- Authentication
+- Role management
+- Export laporan ke Excel
+- Dashboard analytics
+
+---
+
+## 👨‍💻 Author
+
+Dibuat untuk pembelajaran dan pengembangan aplikasi pemesanan sederhana.
