@@ -365,7 +365,7 @@ function OrderForm() {
                       </svg>
                     </div>
                     <input
-                      type="text"
+                      type="number"
                       id="kamar"
                       name="kamar"
                       required
