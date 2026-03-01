@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useOrders } from "../hooks/useOrders"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 const initialErrors = {
   nama: "",
@@ -23,6 +23,8 @@ function OrderForm() {
   const editingOrder = location.state?.order
 
   const { addNewOrder, updateExistingOrder } = useOrders()
+
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     nama: "",
@@ -47,7 +49,12 @@ function OrderForm() {
       if (!value.trim()) return "Nama pemesan wajib diisi 😡"
     }
     if (name === "kamar") {
-      if (!value.trim()) return "Nomor kamar wajib diisi 😡"
+      if (String(value).trim() === "") {
+        return "Nomor kamar wajib diisi 😡"
+      }
+      if (!/^\d+$/.test(String(value))) {
+        return "Nomor kamar harus berupa angka 😡"
+      }
     }
     if (name === "jumlah") {
       if (!value) return "Jumlah porsi wajib diisi 😡"
@@ -73,7 +80,6 @@ function OrderForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Validate all required fields on submit
     const newErrors = {
       nama: validate("nama", formData.nama),
       jumlah: validate("jumlah", formData.jumlah),
@@ -85,7 +91,6 @@ function OrderForm() {
     if (hasError) return
 
     setIsLoading(true)
-    setIsLoading(true)
 
     const payload = {
       nama: formData.nama,
@@ -96,16 +101,16 @@ function OrderForm() {
 
     try {
       if (editingOrder) {
-        // MODE UPDATE
         await updateExistingOrder(editingOrder._id, payload)
       } else {
-        // MODE CREATE
         await addNewOrder(payload)
       }
 
-      navigate("/") // balik ke home
+      navigate("/")
     } catch (error) {
       console.error("Submit error:", error)
+    } finally {
+      setIsLoading(false)
     }
 
     setIsSuccess(true)
