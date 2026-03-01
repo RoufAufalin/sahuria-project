@@ -3,7 +3,6 @@ import { useOrders } from "../hooks/useOrders"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import sahuriaImage from "../assets/sahuria.svg"
-const API_URL = import.meta.env.VITE_API_URL
 
 function Home() {
   const { orders, loading, removeOrder, fetchOrders, page, limit, summary } =
@@ -98,7 +97,7 @@ function Home() {
             />
           </div>
           <h2 className="text-3xl font-extrabold text-gray-800">
-            Paket Sahur Ayam Bakar
+            Paket Sahur Ayam Goreng + Tumis Tahu Toge
           </h2>
           <p className="text-gray-400 text-sm mt-1">
             Harga per porsi: Rp {harga.toLocaleString()}
