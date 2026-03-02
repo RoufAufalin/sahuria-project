@@ -13,6 +13,8 @@ function Home() {
 
   const data = orders?.data || []
 
+  const menu = "Pindang Duri Lunak + Tumis Labuh Tempe"
+
   console.log(data)
 
   const harga = 15000
@@ -97,7 +99,7 @@ function Home() {
             />
           </div>
           <h2 className="text-3xl font-extrabold text-gray-800">
-            Paket Sahur Ayam Goreng + Tumis Tahu Toge
+            Paket {menu}
           </h2>
           <p className="text-gray-400 text-sm mt-1">
             Harga per porsi: Rp {harga.toLocaleString()}
